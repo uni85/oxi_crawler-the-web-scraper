@@ -40,21 +40,34 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         count += 1;
 
-        // SPAWN A CONCURRENT TASK
+// SPAWN A CONCURRENT TASK
         tokio::spawn(async move {
             println!("{} Crawling: {}", "🔍".yellow(), url.cyan());
 
             if let Ok(response) = client_clone.get(&url).send().await {
                 if let Ok(body) = response.text().await {
-                    let document = Html::parse_document(&body);
-                    let selector = Selector::parse("a").unwrap();
+                    
+                    // Create a list for links outside the scope
+                    let mut found_links = Vec::new();
 
-                    for element in document.select(&selector) {
-                        if let Some(link) = element.value().attr("href") {
-                            if link.starts_with("http") {
-                                let _ = tx_clone.send(link.to_string()).await;
+                    // --- SCOPE START ---
+                    {
+                        let document = Html::parse_document(&body);
+                        let selector = Selector::parse("a").unwrap();
+
+                        for element in document.select(&selector) {
+                            if let Some(link) = element.value().attr("href") {
+                                if link.starts_with("http") {
+                                    found_links.push(link.to_string());
+                                }
                             }
                         }
+                    } 
+                    // --- SCOPE END: 'document' and 'selector' are dropped here ---
+
+                    // Now 'document' is gone, so we can safely .await
+                    for link in found_links {
+                        let _ = tx_clone.send(link).await;
                     }
                 }
             }
