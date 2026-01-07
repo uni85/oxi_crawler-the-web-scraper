@@ -4,14 +4,19 @@ use colored::*;
 use std::sync::{Arc, Mutex};
 use std::collections::HashSet;
 use tokio::sync::mpsc;
+use std::fs::OpenOptions;
+use std::io::Write;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let start_url = "https://www.rust-lang.org";
-    
+let start_url = "https://en.wikipedia.org/wiki/Timeline_of_quantum_computing_and_communication";
+
     // Thread-safe set to track visited URLs
     let visited = Arc::new(Mutex::new(HashSet::new()));
-    let client = Client::new();
+    let client = Client::builder()
+        .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+        .timeout(std::time::Duration::from_secs(10))
+        .build()?;
     
     // Channel for communication between tasks
     let (tx, mut rx) = mpsc::channel(100);
@@ -22,7 +27,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("{} Starting Oxicrawler...", "🦀".bright_green());
 
     let mut count = 0;
-    let max_pages = 10; // Limit for safety
+    let max_pages = 10;
 
     while let Some(url) = rx.recv().await {
         if count >= max_pages { break; }
@@ -41,37 +46,49 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         count += 1;
 
 // SPAWN A CONCURRENT TASK
-        tokio::spawn(async move {
-            println!("{} Crawling: {}", "🔍".yellow(), url.cyan());
+    tokio::spawn(async move {
+        println!("{} Crawling: {}", "🔍".yellow(), url.cyan());
 
-            if let Ok(response) = client_clone.get(&url).send().await {
-                if let Ok(body) = response.text().await {
-                    
-                    // Create a list for links outside the scope
-                    let mut found_links = Vec::new();
+        if let Ok(response) = client_clone.get(&url).send().await {
+            if let Ok(body) = response.text().await {
+                
+                let mut found_links = Vec::new();
 
-                    // --- SCOPE START ---
-                    {
-                        let document = Html::parse_document(&body);
-                        let selector = Selector::parse("a").unwrap();
+                // --- SCOPE START ---
+                {
+                    let document = Html::parse_document(&body);
+                    let selector = Selector::parse("a").unwrap();
 
-                        for element in document.select(&selector) {
-                            if let Some(link) = element.value().attr("href") {
-                                if link.starts_with("http") {
-                                    found_links.push(link.to_string());
-                                }
+                    for element in document.select(&selector) {
+                        if let Some(link) = element.value().attr("href") {
+                            if link.starts_with("http") {
+                                found_links.push(link.to_string());
                             }
                         }
-                    } 
-                    // --- SCOPE END: 'document' and 'selector' are dropped here ---
+                    }
+                } 
+                // --- SCOPE END ---
 
-                    // Now 'document' is gone, so we can safely .await
-                    for link in found_links {
-                        let _ = tx_clone.send(link).await;
+                // 1. Write to the file (Inside the if-let block where found_links is alive!)
+                let mut file = OpenOptions::new()
+                    .create(true)
+                    .append(true)
+                    .open("results.log")
+                    .expect("Could not open file");
+
+                for link in &found_links {
+                    if let Err(e) = writeln!(file, "{}", link) {
+                        eprintln!("Couldn't write to file: {}", e);
                     }
                 }
+
+                // 2. Send links to the channel
+                for link in found_links {
+                    let _ = tx_clone.send(link).await;
+                }
             }
-        });
+        }
+    });
     }
 
     println!("\n{} Finished crawling {} pages.", "✅".green(), count);

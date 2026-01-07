@@ -1,0 +1,13 @@
+🦀 Starting Oxicrawler...
+🔍 Crawling: https://en.wikipedia.org/wiki/Timeline_of_quantum_computing_and_communication
+🔍 Crawling: https://donate.wikimedia.org/?wmf_source=donate&wmf_medium=sidebar&wmf_campaign=en.wikipedia.org&uselang=en
+🔍 Crawling: https://ru.wikipedia.org/wiki/%D0%A5%D1%80%D0%BE%D0%BD%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%BA%D0%B2%D0%B0%D0%BD%D1%82%D0%BE%D0%B2%D1%8B%D1%85_%D0%B2%D1%8B%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D0%B9
+
+✅ Finished crawling 10 pages.
+🔍 Crawling: https://fi.wikipedia.org/wiki/Kvanttietokoneiden_aikajana
+🔍 Crawling: https://www.wikidata.org/wiki/Special:EntityPage/Q4302108#sitelinks-wikipedia
+🔍 Crawling: https://uk.wikipedia.org/wiki/%D0%A5%D1%80%D0%BE%D0%BD%D0%BE%D0%BB%D0%BE%D0%B3%D1%96%D1%8F_%D0%BA%D0%B2%D0%B0%D0%BD%D1%82%D0%BE%D0%B2%D0%B8%D1%85_%D0%BE%D0%B1%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D1%8C
+🔍 Crawling: https://www.wikidata.org/wiki/Special:EntityPage/Q4302108
+🔍 Crawling: https://ar.wikipedia.org/wiki/%D8%A7%D9%84%D8%AE%D8%B7_%D8%A7%D9%84%D8%B2%D9%85%D9%86%D9%8A_%D9%84%D9%84%D8%AD%D9%88%D8%B3%D8%A8%D8%A9_%D8%A7%D9%84%D9%83%D9%85%D9%88%D9%85%D9%8A%D8%A9_%D9%88%D8%A7%D9%84%D8%A7%D8%AA%D8%B5%D8%A7%D9%84%D8%A7%D8%AA_%D8%A7%D9%84%D9%83%D9%85%D9%88%D9%85%D9%8A%D8%A9
+🔍 Crawling: https://az.wikipedia.org/wiki/Kvant_hesablamalar%C4%B1n%C4%B1n_xronologiyas%C4%B1
+🔍 Crawling: https://fa.wikipedia.org/wiki/%DA%AF%D8%A7%D9%87%E2%80%8C%D8%B4%D9%85%D8%A7%D8%B1_%D8%B1%D8%A7%DB%8C%D8%A7%D9%86%D8%B4_%DA%A9%D9%88%D8%A7%D9%86%D8%AA%D9%88%D9%85%DB%8C
